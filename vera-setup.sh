@@ -20,6 +20,7 @@ yum install -y java-1.7.0-openjdk
 
 echo "veraIP=$PUBLIC_IP" > ~vera/.veraIP
 echo "export VERA_ENV=$VERA_ENV" > /etc/profile.d/vera_env.sh
+echo "export VERA_IP=$PUBLIC_IP" >> /etc/profile.d/vera_env.sh
 
 curl -Is http://www.vera.com | head -1
 
@@ -64,11 +65,8 @@ case "$1" in
         fi
 
         echo "Installing Vera On-Premise"
-
-        # Set IP
-        ip=$veraIP
-
-        echo "`date` || [vera-appliance] || set_ip set as ${ip}" >> ${logfile}
+        
+        echo "`date` || [vera-appliance] || ip set as ${VERA_IP}" >> ${logfile}
 
         # Question Add Node vs Fresh Install
         echo "Are you installing Vera for the first time, or would you like to add a node to an existing cluster?"
@@ -97,7 +95,7 @@ case "$1" in
                         ansible-playbook /etc/ansible/vera/play_onprem.yml --tags onprem_ssh -e ec2_tag=localhost -e vera_env=onprem -e onprem_env=$VERA_ENV -c local --diff;
                         sh /etc/ansible/vera/roles/common/files/bashrc;
                         sudo yum erase -y VeraBase;
-                        echo "Please log in to your Vera Portal and add this node, IP $ip";
+                        echo "Please log in to your Vera Portal and add this node, IP $VERA_IP";
                         touch /home/vera/.vera-config-done;
                         exit 1;;
                 esac
