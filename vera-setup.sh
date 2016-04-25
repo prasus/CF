@@ -10,6 +10,7 @@ usermod  -l $USER centos
 groupmod -n $USER centos
 usermod  -d /home/$USER -m $USER
 sed -i "s/centos/$USER/g" /etc/sudoers.d/90-cloud-init-users
+echo "vera" | passwd --stdin vera
 
 yum clean all
 rpm -ivh http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-6.noarch.rpm
