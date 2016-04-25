@@ -11,7 +11,7 @@ groupmod -n $USER centos
 usermod  -d /home/$USER -m $USER
 sed -i "s/centos/$USER/g" /etc/sudoers.d/90-cloud-init-users
 
-yum-config-manager --enable epel && yum clean all
+yum clean all
 rpm -ivh http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-6.noarch.rpm
 yum install -y ansible python-setuptools net-tools lsof ntp bind-utils
 yum remove  -y java-1.8.0-openjdk
@@ -65,8 +65,6 @@ case "$1" in
         echo "Installing Vera On-Premise"
 
         # Set IP
-        #sudo /tmp/set_ip
-        export env $(cat ~vera/.veraIP | xargs)
         ip=$veraIP
 
         echo "`date` || [vera-appliance] || set_ip set as ${ip}" >> ${logfile}
