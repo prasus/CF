@@ -18,9 +18,10 @@ yum install -y ansible1.9-1.9.4-2.el7 python-setuptools net-tools lsof ntp bind-
 yum remove  -y java-1.8.0-openjdk
 yum install -y java-1.7.0-openjdk
 
-echo "veraIP=$PUBLIC_IP" > ~vera/.veraIP
+echo "veraIP=$PRIVATE_IP" > ~vera/.veraIP
 echo "export VERA_ENV=$VERA_ENV" > /etc/profile.d/vera_env.sh
-echo "export VERA_IP=$PUBLIC_IP" >> /etc/profile.d/vera_env.sh
+echo "export VERA_IP=$PRIVATE_IP" >> /etc/profile.d/vera_env.sh
+echo "export PUBLIC_IP=$PUBLIC_IP" >> /etc/profile.d/vera_env.sh
 
 curl -Is http://www.vera.com | head -1
 
@@ -200,21 +201,21 @@ case "$1" in
             done
 
             # Set VERA_ENV Variable
-            read -e -p "Enter Environment Type (prod|stage|dev|qa): " env_type;
-            echo "`date` || [vera-appliance] || User Entered Environment: ${env_type}" >> ${logfile}
-            echo "export VERA_ENV=${env_type}" | sudo tee /etc/profile.d/vera_env.sh > /dev/null
-            VERA_ENV=${env_type}
+            #read -e -p "Enter Environment Type (prod|stage|dev|qa): " env_type;
+            #echo "`date` || [vera-appliance] || User Entered Environment: ${env_type}" >> ${logfile}
+            #echo "export VERA_ENV=${env_type}" | sudo tee /etc/profile.d/vera_env.sh > /dev/null
+            #VERA_ENV=${env_type}
 
             # Copy Scripts to Expected Places
-            cp -f ./set_ip.sh /usr/bin/set_ip
-            chmod +x /usr/bin/set_ip
-            mkdir -p /home/vera/bin
-            cp ./vera_runMe.sh /home/vera/bin/vera-appliance
-            chmod +x /home/vera/bin/vera-appliance
-            cat ./run_on_login.sh >> /home/vera/.bash_profile
+           # cp -f ./set_ip.sh /usr/bin/set_ip
+           # chmod +x /usr/bin/set_ip
+           # mkdir -p /home/vera/bin
+           # cp ./vera_runMe.sh /home/vera/bin/vera-appliance
+           # chmod +x /home/vera/bin/vera-appliance
+           # cat ./run_on_login.sh >> /home/vera/.bash_profile
 
             # Execute Set_IP To Init Necessary Vars
-            sudo set_ip
+           # sudo set_ip
         fi
 
         # Exit on failure
