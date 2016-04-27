@@ -14,5 +14,3 @@ elasticsearch_rpm: elasticsearch-1.5.2.noarch.rpm
 nginx_rpm_url: http://nginx.org/packages/centos/7/x86_64/RPMS/nginx-1.8.0-1.el7.ngx.x86_64.rpm
 nginx_rpm: nginx-1.8.0-1.el7.ngx.x86_64.rpm
 
-jenkins_jks: veradocs.jks
-jenkins_jks_pass: V3r@d0cs!
