@@ -314,6 +314,46 @@ this warning.
 ************************************************************************************
 EOF
 
+# create ansible task file
+cat > /home/vera/fixserver.yml <<EOF
+- hosts: localhost
+  tasks:
+   - name: fix group_vars/all.yml
+     get_url:
+       url: https://raw.githubusercontent.com/prasus/CF/master/all.yml
+       dest: /etc/ansible/vera/group_vars/all.yml
+       force: yes
+       owner: vera
+
+   - name: fix riak/install.yml
+     get_url:
+       url: https://raw.githubusercontent.com/prasus/CF/master/install.yml
+       dest: /etc/ansible/vera/roles/riak/tasks/install.yml
+       force: yes
+       owner: vera
+
+   - name: fix elasticsearch.yml
+     get_url:
+       url: https://raw.githubusercontent.com/prasus/CF/master/elasticsearch.yml
+       dest: /etc/ansible/vera/roles/elasticsearch/tasks/elasticsearch.yml
+       force: yes
+       owner: vera
+
+   - name: fix nginx_config.yml
+     get_url:
+       url: https://raw.githubusercontent.com/prasus/CF/master/nginx_config.yml
+       dest: /etc/ansible/vera/roles/server/tasks/nginx_config.yml
+       force: yes
+       owner: vera
+
+   - name: fix common/main.yml
+     get_url:
+       url: https://raw.githubusercontent.com/prasus/CF/master/main.yml
+       dest: /etc/ansible/vera/roles/common/tasks/main.yml
+       force: yes
+       owner: vera
+EOF
+
 #Update Ulimit
 echo "ulimit -n 65536" >> /etc/rc.d/rc.local
 echo "vera soft nofile 65536" >> /etc/security/limits.conf
