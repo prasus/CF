@@ -1,0 +1,105 @@
+---
+#Elastic Search Configurator
+
+
+- name: Get Elastic Search
+  get_url: url={{elasticsearch_rpm_url}} dest=/tmp/{{elasticsearch_rpm}}
+  sudo: yes
+  tags:
+    - elasticsearch_install
+    - elasticsearch_install_onprem
+
+- name: Check ES Config Exists
+  stat: path=/etc/elasticsearch/elasticsearch.yml
+  register: check_es_exists
+  tags:
+    - elasticsearch_install
+    - elasticsearch_install_onprem
+
+- name: Backup ES Config
+  copy: src=/etc/elasticsearch/elasticsearch.yml dest=/tmp/elasticsearch.yml
+  when: check_es_exists.stat.exists and not is_legacy.stat.exists
+  tags:
+    - elasticsearch_install
+    - elasticsearch_install_onprem
+
+- name: Install Elastic Search
+  yum: name=/tmp/{{elasticsearch_rpm}} state=present
+  sudo: yes
+  notify: restart elasticsearch
+  tags:
+    - elasticsearch_install
+    - elasticsearch_install_onprem
+
+- name: Copy Elasticserch yml template
+  template: src=elasticsearch.yml.j2 dest=/etc/elasticsearch/elasticsearch.yml.template backup=yes
+  sudo: yes
+  tags:
+    - elasticsearch_install
+    - elasticsearch_install_onprem
+
+- name: Restore ES Config
+  copy: src=/tmp/elasticsearch.yml dest=/etc/elasticsearch/elasticsearch.yml
+  sudo: yes
+  when: check_es_exists.stat.exists and not is_legacy.stat.exists
+  tags:
+    - elasticsearch_install
+    - elasticsearch_install_onprem
+
+- name: Get ES version
+  shell: curl -s -XGET 'localhost:9200' | grep number | awk -F':' '{print $2}' | head -n 4  | sed -e 's/,//g' | sed -e 's/"//g' |sed -e 's/\.//g' | xargs
+  register: es_version
+  tags:
+    - elasticsearch_version
+    - elasticsearch_datadormat_plugin
+
+- name: Print version
+  debug: var=es_version
+  tags:
+    - elasticsearch_version
+
+- name: Print version
+  debug: var=es_version.stdout
+  tags:
+    - elasticsearch_version
+
+- name: Check if plugin is installed exists
+  stat: path=/usr/share/elasticsearch/plugins/dataformat
+  register: check_path
+  tags:
+    - elasticsearch_datadormat_plugin
+
+- name: Install Elastic Search Data Format Plugin
+  shell: /usr/share/elasticsearch/bin/plugin --install org.codelibs/elasticsearch-dataformat/{{elastsearch_dataformat_version}}
+  sudo: yes
+  notify: restart elasticsearch
+  ignore_errors: yes
+  tags:
+    - elasticsearch_datadormat_plugin
+  when:
+    - elastsearch_dataformat_version != ""
+    - vera_env != ""
+    - check_path.stat.exists == false
+
+- name: Pip Install
+  easy_install: name=pip
+  sudo: yes
+  tags:
+    - elasticsearch_install_onprem
+
+- name: Install ES Client Deps
+  yum: name="{{item}}" state=present
+  with_items:
+    - python-devel
+    - libffi-devel
+    - openssl-devel
+    - '@Development tools'
+  sudo: yes
+  tags:
+    - elasticsearch_install_onprem
+
+- name : Pip Install ES Client
+  pip: name=elasticsearch state=latest
+  sudo: yes
+  tags:
+    - elasticsearch_install_onprem
