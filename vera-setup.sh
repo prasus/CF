@@ -260,6 +260,7 @@ set -u
 EOF
 
 chmod +x /home/vera/bin/vera-appliance
+chown -R vera:vera /home/vera/bin
 
 cat > /etc/yum.repos.d/tempvera.repo <<EOF
 [Vera]
