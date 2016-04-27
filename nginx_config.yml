@@ -1,0 +1,137 @@
+---
+
+#Configure nginix onprem
+
+- name: Check NGINX Config Exists
+  stat: path=/etc/nginx/nginx.conf
+  register: check_nginx_exists
+  tags:
+    - nginx_install
+
+- name: Backup NGINX Config
+  copy: src=/etc/nginx/nginx.conf dest=/tmp/nginx.conf
+  when: check_nginx_exists.stat.exists and not is_legacy.stat.exists
+  tags:
+    - nginx_install
+
+- name: Get Nginx 
+  get_url: url={{nginx_rpm_url}} dest=/tmp/{{nginx_rpm}}
+  sudo: yes
+  tags:
+    - nginx_install
+
+- name: Install nginx
+  yum: name="/tmp/{{nginx_rpm}}" state=present
+  sudo: yes
+  tags: 
+    - nginx_install
+
+- name: Assure that cert folder exists for nginx
+  file: path={{nginx_conf_dir}}/certs state=directory owner=root group=root
+  sudo: yes
+  tags:
+    - nginx_install
+
+- name: Certificates Upload for Nginx
+  copy: src=nginx/{{item}} dest={{nginx_conf_dir}}/certs  backup=yes owner=root group=root
+  with_items:
+    - "{{nginx_ssl_crt}}"
+    - "{{nginx_ssl_key}}"
+  sudo: yes
+  notify: restart nginx
+  when: not check_nginx_exists.stat.exists
+  tags:
+    - nginx_install
+
+- name: Configure Nginx Conf file
+  template: src=nginx/{{nginx_conf_template}} dest={{nginx_conf_dir}}/nginx.conf backup=yes
+  sudo: yes
+  notify: restart nginx
+  tags:
+    - nginx_configure
+
+- name: Restore NGINX Config
+  copy: src=/tmp/nginx.conf dest=/etc/nginx/nginx.conf
+  sudo: yes
+  when: check_nginx_exists.stat.exists and not is_legacy.stat.exists
+  tags:
+    - nginx_install
+
+- name: Adding base files to Nginx
+  copy: src=nginx/404.html  dest=/usr/share/nginx/html/ backup=yes
+  sudo: yes
+  notify: restart nginx
+  tags:
+    - nginx_configure
+
+- name: Create VirtualHost dir
+  file: path=/var/www/{{item}}/public_html state=directory owner=nginx group=nginx
+  sudo: yes
+  with_items: nginx_vhost
+  tags:
+    - nginx_configure_vhosts
+
+    
+- name: copy vhost config 
+  template: src=nginx/{{ nginx_vhost_template }} dest=/etc/nginx/conf.d/{{ item }}.conf backup=yes owner=nginx group=nginx
+  sudo: yes 
+  with_items: nginx_vhost
+  notify: restart nginx
+  tags: 
+    - nginx_configure_vhosts
+
+- name: Adding 404 files to Nginx
+  copy: src=nginx/404.html  dest=/var/www/{{ item }}/public_html/ owner=nginx group=nginx
+  with_items: nginx_vhost
+  sudo: yes
+  notify: restart nginx
+  tags:
+    - nginx_configure_vhosts
+
+- name: Generate nginx htpassword
+  shell:
+    echo "{{ nginx_user }}:$(openssl passwd -crypt {{ nginx_password }}):{{ nginx_user }}" |tee vera.htpasswd
+  args:
+    chdir: /etc/nginx/conf.d
+    creates: /etc/nginx/conf.d/vera.htpasswd
+  sudo: yes
+  register: http_pass_gen
+  when: nginx_user is defined and nginx_password is defined
+  notify: restart nginx
+  tags: 
+    - nginx_configure_vhosts
+
+- name: Vera htpassword file permissions
+  file:
+    path=/etc/nginx/conf.d/vera.htpasswd
+  sudo: yes
+  notify: restart nginx
+  when: http_pass_gen|changed
+  tags: 
+    - nginx_configure_vhosts
+
+#- name: add route53 record     
+#  route53:
+#      command: "create"
+#      zone: "{{hostedzone}}"
+#      record: "{{nginx_vhost}}"
+#      type: "A"
+#      ttl: "60"
+#      value: "{{ec2_ip_address}}"
+#  tags: 
+#    - nginx_configure_vhosts
+    
+- name: Host File Update
+  lineinfile: dest=/etc/hosts line="127.0.0.1 {{ item }}"
+  sudo: yes
+  with_items: nginx_vhost
+  notify: restart nginx
+  tags:
+    - nginx_configure_vhosts_onprem
+
+- name: Remove nginx default conf
+  file: path=/etc/nginx/conf.d/default.conf state=absent
+  sudo: yes
+  notify: restart nginx
+  tags:
+    - nginx_configure_vhosts_onprem
