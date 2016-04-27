@@ -1,0 +1,18 @@
+---
+
+
+testhost:       www.google.com
+backupfile:     "{{ec2_tag_Name}}_{{ ansible_date_time.iso8601 }}_{{ansible_default_ipv4.address}}_{{jenkins_build}}.tar.xz"
+backupsnapshot: "{{ec2_tag_Name}}_{{ ansible_date_time.iso8601 }}_{{jenkins_build}}"
+riak_rpm_url:   http://s3.amazonaws.com/downloads.basho.com/riak/2.0/2.0.5/rhel/6/riak-2.0.5-1.el6.x86_64.rpm
+riak_rpm:       riak-2.0.5-1.el7.centos.x86_64.rpm
+
+
+elasticsearch_rpm_url: https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-1.5.2.noarch.rpm
+elasticsearch_rpm: elasticsearch-1.5.2.noarch.rpm
+
+nginx_rpm_url: http://nginx.org/packages/centos/7/x86_64/RPMS/nginx-1.8.0-1.el7.ngx.x86_64.rpm
+nginx_rpm: nginx-1.8.0-1.el7.ngx.x86_64.rpm
+
+jenkins_jks: veradocs.jks
+jenkins_jks_pass: V3r@d0cs!
