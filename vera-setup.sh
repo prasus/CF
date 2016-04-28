@@ -14,7 +14,9 @@ echo "vera" | passwd --stdin vera
 
 yum clean all
 rpm -ivh http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-6.noarch.rpm
-yum install -y ansible1.9-1.9.4-2.el7 python-setuptools net-tools lsof ntp bind-utils
+yum install -y python-devel python-crypto python-setuptools net-tools lsof ntp bind-utils
+sudo easy_install pip
+sudo pip install ansible==1.9.4
 yum remove  -y java-1.8.0-openjdk
 yum install -y java-1.7.0-openjdk
 
@@ -363,5 +365,5 @@ sed -i 's/enforcing/disabled/g' /etc/selinux/config /etc/selinux/config
 setenforce 0
 sed -i "s/^.*requiretty/#Defaults requiretty/" /etc/sudoers
 ntpdate 0.amazon.pool.ntp.org
-yum install -y VeraBase.noarch
-ansible-playbook /home/vera/fixserver.yml
+#yum install -y VeraBase.noarch
+#ansible-playbook /home/vera/fixserver.yml
