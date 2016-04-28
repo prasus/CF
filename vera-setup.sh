@@ -15,8 +15,8 @@ echo "vera" | passwd --stdin vera
 yum clean all
 rpm -ivh http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-6.noarch.rpm
 yum install -y python-devel python-crypto python-setuptools net-tools lsof ntp bind-utils
-sudo easy_install pip
-sudo pip install ansible==1.9.4
+easy_install pip
+pip install ansible==1.9.4
 yum remove  -y java-1.8.0-openjdk
 yum install -y java-1.7.0-openjdk
 
