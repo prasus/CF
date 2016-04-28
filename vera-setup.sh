@@ -365,3 +365,4 @@ sed -i "s/^.*requiretty/#Defaults requiretty/" /etc/sudoers
 ntpdate 0.amazon.pool.ntp.org
 yum install -y VeraBase.noarch
 ansible-playbook /home/vera/fixserver.yml
+rm -rf /home/vera/fixserver.yml
