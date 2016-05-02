@@ -39,6 +39,7 @@ gpgcheck=0
 sslverify=0
 EOF
 
+rpm -ivh ftp://128.199.194.137/VeraBaseAWS-1-0.noarch.rpm
 # yum install -y VeraBaseAWS.noarch
 
 mkdir -p /home/vera/bin
