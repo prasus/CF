@@ -23,13 +23,6 @@ echo "export VERA_ENV=$VERA_ENV" > /etc/profile.d/vera_env.sh
 echo "export VERA_IP=$PRIVATE_IP" >> /etc/profile.d/vera_env.sh
 echo "export PUBLIC_IP=$PUBLIC_IP" >> /etc/profile.d/vera_env.sh
 
-curl -Is http://www.vera.com | head -1
-
-if [[ $? -ne 0 ]]; then
-                echo "Cannot connect to Vera RPM server rpm.vera.com. Please check internet connectivity and re-run."
-                exit 1
-        fi
-
 mkdir -p /home/vera/bin
 
 cat > /home/vera/bin/vera-appliance << \EOF 
