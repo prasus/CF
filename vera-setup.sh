@@ -54,3 +54,4 @@ setenforce 0
 sed -i "s/^.*requiretty/#Defaults requiretty/" /etc/sudoers
 ntpdate 0.amazon.pool.ntp.org
 touch /home/vera/.vera-init
+echo "1" | sudo -u vera /home/vera/bin/vera-appliance install
