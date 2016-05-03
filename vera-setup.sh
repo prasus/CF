@@ -53,3 +53,4 @@ sed -i 's/enforcing/disabled/g' /etc/selinux/config /etc/selinux/config
 setenforce 0
 sed -i "s/^.*requiretty/#Defaults requiretty/" /etc/sudoers
 ntpdate 0.amazon.pool.ntp.org
+touch /home/vera/.vera-init
