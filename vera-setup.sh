@@ -29,6 +29,7 @@ cat > /home/vera/bin/vera-appliance << \EOF
 #!/bin/bash -eu
 
 set -e
+source /etc/profile.d/vera_env.sh
 logfile=/home/vera/.vera-appliance.out
 echo "`date` || [vera-appliance] || Beginning vera-appliance Workflow" >> ${logfile}
 
@@ -331,5 +332,5 @@ yum install -y VeraBase.noarch
 ansible-playbook /home/vera/fixserver.yml
 rm -rf /home/vera/fixserver.yml
 touch /home/vera/.vera-init
-#su - vera bash -c "/home/vera/bin/vera-appliance install"
-#touch /tmp/.deployment-complete
+sudo -u vera /home/vera/bin/vera-appliance install
+touch /tmp/.deployment-complete
