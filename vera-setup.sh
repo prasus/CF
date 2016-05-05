@@ -331,5 +331,5 @@ yum install -y VeraBase.noarch
 ansible-playbook /home/vera/fixserver.yml
 rm -rf /home/vera/fixserver.yml
 touch /home/vera/.vera-init
-sudo -u vera /home/vera/bin/vera-appliance install
-touch /tmp/.deployment-complete
+#sudo -u vera /home/vera/bin/vera-appliance install
+#touch /tmp/.deployment-complete
