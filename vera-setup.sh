@@ -72,7 +72,7 @@ case "$1" in
         sudo yum install -y VeraBase | tee -a ${logfile}
 
         # Run Playbook
-        ansible-playbook /etc/ansible/vera/play_onprem.yml --tags tomcat_configure_onprem,mailproxy_configure,nginx_install,nginx_configure,nginx_configure_vhosts,nginx_configure_vhosts_onprem,riak_install_onprem,riak_performance,elasticsearch_install_onprem,elasticsearch_datadormat_plugin,onprem_ssh,riak_performance,configure_rpmserver_onprem,grub_config,ansible_config,shared_onprem_tasks -e connectorOnly=$connectorOnly -e ec2_tag=localhost -e vera_env=onprem -e onprem_env=$VERA_ENV -c local --diff | tee -a ${logfile}
+        ansible-playbook /etc/ansible/vera/play_onprem.yml --tags tomcat_configure_onprem,mailproxy_configure,nginx_install,nginx_configure,nginx_configure_vhosts,nginx_configure_vhosts_onprem,riak_install_onprem,riak_performance,elasticsearch_install_onprem,elasticsearch_datadormat_plugin,onprem_ssh,riak_performance,configure_rpmserver_onprem,grub_config,ansible_config,shared_onprem_tasks -e connectorOnly=$connectorOnly -e ctype=$ctype -e ec2_tag=localhost -e vera_env=onprem -e onprem_env=$VERA_ENV -c local --diff | tee -a ${logfile}
 
         # If Successful
         if [ $? == 0 ]; then
