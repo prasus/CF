@@ -229,8 +229,8 @@ chown -R vera:vera /home/vera/bin
 
 cat > /etc/yum.repos.d/tempvera.repo <<EOF
 [Vera]
-name= Vera`echo $VERA_ENV | tr '[:lower:]' '[:upper:]'`
-baseurl=https://vera:V^3raR0cZ!@rpm$VERA_ENV.veraeng.com
+name= Vera Prod Rpm Repository
+baseurl=https://veradocs:XvV5DIsW@rpm.vera.com
 enabled=1
 gpgcheck=0
 sslverify=0
